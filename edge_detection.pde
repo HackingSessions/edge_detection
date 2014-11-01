@@ -1,12 +1,11 @@
 import processing.video.*;
 
 // Capture cam;
-PImage cam;
+Capture cam;
 float threshhold=10;
 
 void setup() {
-  cam = loadImage("macaw.jpg");
-  /*  
+
   String[] cameras = Capture.list();
   if ( cameras.length == 0 ) {
     println( "There are no available cameras" );
@@ -20,7 +19,7 @@ void setup() {
   
   cam = new Capture( this, cameras[0] );
   cam.start();
-  */
+  
   size( 640, 480 );
 }
 
@@ -35,9 +34,9 @@ PImage edgeDetectget(PImage src){
         abs(src_brightness - brightness(src.get(x,y+1)))+
         abs(src_brightness - brightness(src.get(x,y-1)));
       if (diff/4 > threshhold) {
-        result.set(x,y,color(255,255,255));
-      }      else {
         result.set(x,y,color(0,0,0));
+      }      else {
+        result.set(x,y,color(255,255,255));
       }
         
     }
@@ -68,9 +67,9 @@ PImage edgeDetectarray(PImage src){
         diff = diff / 4;
         
         if (diff > threshhold){
-          vals[x][y]=color(255,255,255);
-        } else {
           vals[x][y]=color(0,0,0);
+        } else {
+          vals[x][y]=color(255,255,255);
         }
       }
     }
@@ -85,14 +84,13 @@ PImage edgeDetectarray(PImage src){
 }
 
 void draw() {
-  /*
+
   if ( cam.available() == true ) {
     cam.read();
   }
   
-  grayscale( cam );
-  */
-  PImage r = edgeDetectarray(cam);
+  
+  PImage r = edgeDetectget(cam);
   image(r, 0, 0);
 }
 
