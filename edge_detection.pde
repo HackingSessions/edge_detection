@@ -27,8 +27,8 @@ void setup() {
 PImage edgeDetectget(PImage src){
   int r,g,b;
   PImage result = createImage(src.width,src.height,RGB);
-  for (int x = 1; x< src.width-1;x++) {
-    for (int y=1; y< src.height-1;y++) {
+  for (int x = 0; x< src.width;x++) {
+    for (int y=0; y< src.height;y++) {
       float src_brightness = brightness(src.get(x,y));
       float diff = abs(src_brightness - brightness(src.get(x-1,y)))+
         abs(src_brightness - brightness(src.get(x+1,y)))+
@@ -46,11 +46,40 @@ PImage edgeDetectget(PImage src){
 }
 
 
-PImage edgeDetectpixels(PImage src){
+PImage edgeDetectarray(PImage src){
   int r,g,b;
 
   PImage result=createImage(src.width,src.height,RGB);
-  result.copy(src,0,0,src.width,src.height,0,0,src.width,src.height);
+  src.loadPixels();
+  int w = src.width;
+  int h = src.height;
+  float diff,br;
+  color[][] vals = new color[src.width][src.height];
+
+  for (int x=0;x<w;x++) {
+    for   (int y =  0; y < h-1 ; y++ ){
+      if (x>0 && x < w && y > 0 && y < h) {
+        
+        br = brightness(src.get(x,y));
+        diff = abs(br - brightness(src.pixels[(y+1)*w+x]))+
+          abs(br - brightness(src.pixels[(y-1)*w+x]))+
+          abs(br - brightness(src.pixels[y*w+x+1]))+
+          abs(br - brightness(src.pixels[y*w+x-1]));
+        diff = diff / 4;
+        
+        if (diff > threshhold){
+          vals[x][y]=color(255,255,255);
+        } else {
+          vals[x][y]=color(0,0,0);
+        }
+      }
+    }
+  }
+    for (int x=0;x<w;x++) {
+      for (int y =  0; y < h ; y++ ){
+        result.set(x,y,vals[x][y]);
+      }
+    }
   
   return result;
 }
@@ -63,7 +92,7 @@ void draw() {
   
   grayscale( cam );
   */
-  PImage r = edgeDetectpixels(cam);
+  PImage r = edgeDetectarray(cam);
   image(r, 0, 0);
 }
 
